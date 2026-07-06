@@ -210,7 +210,8 @@ function FileRow({
   return (
     <div
       role="treeitem"
-      aria-expanded={item.kind === "folder" ? isExpanded : undefined}
+      aria-selected={isSelected}
+      aria-expanded={item.kind === "folder" ? isExpanded : false}
       tabIndex={0}
       className={cn(
         "flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors",
