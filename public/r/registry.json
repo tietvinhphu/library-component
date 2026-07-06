@@ -1,0 +1,29 @@
+{
+  "name": "library-component",
+  "homepage": "https://your-domain.com",
+  "items": [
+    {
+      "name": "file-system",
+      "title": "File System",
+      "type": "registry:component",
+      "description": "Cây thư mục dạng list hoặc icons, tự suy ra hierarchy từ path, expose callback onFileOpen thay vì hard-depend vào viewer nặng.",
+      "categories": ["file-system"],
+      "files": [
+        { "path": "registry/file-system/file-system.tsx", "type": "registry:component" }
+      ],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [],
+      "meta": {
+        "designRationale": "Tách phần lõi tree ra khỏi PDF/DOCX/XLSX viewer. Người dùng tự hook vào onFileOpen để xử lý preview theo nhu cầu, không bị ép nhận toàn bộ dependency nặng.",
+        "inspirationSource": {
+          "platform": "extend-hq/ui",
+          "url": "https://github.com/extend-hq/ui",
+          "author": "extend-hq",
+          "licenseStatus": "reviewed-safe-reference"
+        },
+        "tags": ["file-system", "tree", "folder", "explorer"],
+        "version": "1.0.0"
+      }
+    }
+  ]
+}
