@@ -155,6 +155,18 @@ function getParentFolders(filePath: string): string[] {
   return parents;
 }
 
+/** Merge folder paths into an expanded-folders set */
+function mergeExpandedFolders(
+  prev: Set<string>,
+  paths: Iterable<string>
+): Set<string> {
+  const next = new Set(prev);
+  for (const path of paths) {
+    next.add(path);
+  }
+  return next;
+}
+
 /** Flatten tree items for list view (extracted to avoid deep nesting) */
 function flattenTreeItems(
   tree: Map<string | null, FileSystemItem[]>,
@@ -185,7 +197,7 @@ interface FileIconProps {
   className?: string;
 }
 
-function FileIcon({ item, className }: FileIconProps) {
+function FileIcon({ item, className }: Readonly<FileIconProps>) {
   const iconType = item.kind === "folder" ? "folder" : getFileIconType(item);
 
   const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -225,7 +237,7 @@ function FileRow({
   onSelect,
   onToggle,
   onOpen,
-}: FileRowProps) {
+}: Readonly<FileRowProps>) {
   const paddingLeft = `${level * 16 + 12}px`;
 
   return (
@@ -355,35 +367,43 @@ const FileSystem = React.forwardRef<FileSystemRef, FileSystemProps>(
       return currentFolderPath.split("/");
     }, [currentFolderPath]);
 
-    // Imperative API
-    React.useImperativeHandle(ref, () => ({
-      openFile: (path: string) => {
+    const openFileByPath = React.useCallback(
+      (path: string) => {
         const file = items.find((i) => i.path === path && i.kind === "file");
-        if (file) {
-          // Auto-expand all parent folders so the item is visible in list view
-          const parents = getParentFolders(path);
-          setExpandedFolders((prev) => {
-            const next = new Set(prev);
-            parents.forEach((p) => next.add(p));
-            return next;
-          });
-          setSelectedItem(file);
-          onFileOpen?.(file, { preventDefault: () => {} } as React.MouseEvent);
+        if (!file) return;
+
+        const parents = getParentFolders(path);
+        setExpandedFolders((prev) => mergeExpandedFolders(prev, parents));
+        setSelectedItem(file);
+        onFileOpen?.(file, { preventDefault: () => {} } as React.MouseEvent);
+      },
+      [items, onFileOpen]
+    );
+
+    const toggleFolderByPath = React.useCallback((path: string, isOpen: boolean) => {
+      setExpandedFolders((prev) => {
+        const next = new Set(prev);
+        if (isOpen) {
+          next.add(path);
+        } else {
+          next.delete(path);
         }
-      },
-      toggleFolder: (path: string, isOpen: boolean) => {
-        setExpandedFolders((prev) => {
-          const next = new Set(prev);
-          if (isOpen) {
-            next.add(path);
-          } else {
-            next.delete(path);
-          }
-          return next;
-        });
-      },
-      clearSelection: () => setSelectedItem(null),
-    }));
+        return next;
+      });
+    }, []);
+
+    const clearSelection = React.useCallback(() => setSelectedItem(null), []);
+
+    // Imperative API
+    React.useImperativeHandle(
+      ref,
+      () => ({
+        openFile: openFileByPath,
+        toggleFolder: toggleFolderByPath,
+        clearSelection,
+      }),
+      [openFileByPath, toggleFolderByPath, clearSelection]
+    );
 
     // Handlers
     const handleSelect = React.useCallback(
