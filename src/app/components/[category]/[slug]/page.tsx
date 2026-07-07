@@ -1,8 +1,10 @@
-// Trang đầy đủ khi truy cập trực tiếp / F5 / share link
-export default function SlugPage() {
-  return (
-    <div>
-      <h1>Slug Page</h1>
-    </div>
-  );
+import ComponentDetail from "@/components/ComponentDetail";
+
+interface SlugPageProps {
+  params: Promise<{ category: string; slug: string }>;
+}
+
+export default async function SlugPage({ params }: SlugPageProps) {
+  const { slug } = await params;
+  return <ComponentDetail name={slug} />;
 }

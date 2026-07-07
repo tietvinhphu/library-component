@@ -1,9 +1,10 @@
-// Intercepting route - hiện như popup khi bấm từ danh sách
-// Pattern (.)[slug] intercept requests from /components/[category]/[slug]
-export default function ModalSlugPage() {
-  return (
-    <div>
-      <h1>Modal (Intercepted)</h1>
-    </div>
-  );
+import ComponentDetail from "@/components/ComponentDetail";
+
+interface ModalPageProps {
+  params: Promise<{ category: string; slug: string }>;
+}
+
+export default async function ModalSlugPage({ params }: ModalPageProps) {
+  const { slug } = await params;
+  return <ComponentDetail name={slug} />;
 }
