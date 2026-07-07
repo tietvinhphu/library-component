@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 export interface RegistryItem {
   name: string;
@@ -56,7 +56,7 @@ export function getAllCategories(): string[] {
   items.forEach((item) => {
     item.categories.forEach((cat) => categories.add(cat));
   });
-  return Array.from(categories).sort();
+  return Array.from(categories).sort((a, b) => a.localeCompare(b));
 }
 
 export function getComponentDocs(name: string): string | null {

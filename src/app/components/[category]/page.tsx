@@ -5,14 +5,14 @@ interface CategoryPageProps {
   params: Promise<{ category: string }>;
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
+export default async function CategoryPage({ params }: Readonly<CategoryPageProps>) {
   const { category } = await params;
   const components = getComponentsByCategory(category);
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6 capitalize">
-        {category.replace(/-/g, " ")}
+        {category.replaceAll("-", " ")}
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {components.map((component) => {

@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { getAllCategories } from "@/lib/registry";
 
+interface ComponentsLayoutProps {
+  children: React.ReactNode;
+}
+
 export default function ComponentsLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Readonly<ComponentsLayoutProps>) {
   const categories = getAllCategories();
 
   return (
@@ -20,7 +22,7 @@ export default function ComponentsLayout({
               href={`/components/${category}`}
               className="block px-2 py-1.5 rounded-md text-sm hover:bg-muted transition-colors capitalize"
             >
-              {category.replace(/-/g, " ")}
+              {category.replaceAll("-", " ")}
             </Link>
           ))}
         </nav>

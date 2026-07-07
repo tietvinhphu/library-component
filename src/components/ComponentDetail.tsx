@@ -4,6 +4,6 @@ interface ComponentDetailProps {
   name: string;
 }
 
-export default function ComponentDetail({ name }: ComponentDetailProps) {
+export default function ComponentDetail({ name }: Readonly<ComponentDetailProps>) {
   return <ComponentDetailClient name={name} />;
 }

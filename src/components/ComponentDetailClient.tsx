@@ -13,7 +13,13 @@ interface ComponentData {
   previewImage: string | null;
 }
 
-export default function ComponentDetailClient({ name }: { name: string }) {
+interface ComponentDetailClientProps {
+  name: string;
+}
+
+export default function ComponentDetailClient({
+  name,
+}: Readonly<ComponentDetailClientProps>) {
   const [data, setData] = useState<ComponentData | null>(null);
   const [copied, setCopied] = useState(false);
 
