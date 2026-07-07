@@ -142,7 +142,7 @@ function formatFileSize(bytes?: number): string {
   const k = 1024;
   const sizes = ["B", "KB", "MB", "GB", "TB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+  return `${Number.parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
 }
 
 /** Get all parent folder paths from a file path */
@@ -155,12 +155,33 @@ function getParentFolders(filePath: string): string[] {
   return parents;
 }
 
+/** Flatten tree items for list view (extracted to avoid deep nesting) */
+function flattenTreeItems(
+  tree: Map<string | null, FileSystemItem[]>,
+  expandedFolders: Set<string>
+): Array<{ item: FileSystemItem; level: number }> {
+  const result: Array<{ item: FileSystemItem; level: number }> = [];
+
+  const traverse = (parentPath: string | null, level: number) => {
+    const children = tree.get(parentPath) || [];
+    for (const item of children) {
+      result.push({ item, level });
+      if (item.kind === "folder" && expandedFolders.has(item.path)) {
+        traverse(item.path, level + 1);
+      }
+    }
+  };
+
+  traverse(null, 0);
+  return result;
+}
+
 // ============================================================================
 // Icon Component
 // ============================================================================
 
 interface FileIconProps {
-  item: FileSystemItem;
+  item: Readonly<FileSystemItem>;
   className?: string;
 }
 
@@ -187,7 +208,7 @@ function FileIcon({ item, className }: FileIconProps) {
 // ============================================================================
 
 interface FileRowProps {
-  item: FileSystemItem;
+  item: Readonly<FileSystemItem>;
   isSelected: boolean;
   isExpanded: boolean;
   level: number;
@@ -318,20 +339,10 @@ const FileSystem = React.forwardRef<FileSystemRef, FileSystemProps>(
     const tree = React.useMemo(() => buildTree(items), [items]);
 
     // Flatten tree for list view
-    const flattenedItems = React.useMemo(() => {
-      const result: Array<{ item: FileSystemItem; level: number }> = [];
-      const traverse = (parentPath: string | null, level: number) => {
-        const children = tree.get(parentPath) || [];
-        for (const item of children) {
-          result.push({ item, level });
-          if (item.kind === "folder" && expandedFolders.has(item.path)) {
-            traverse(item.path, level + 1);
-          }
-        }
-      };
-      traverse(null, 0);
-      return result;
-    }, [tree, expandedFolders]);
+    const flattenedItems = React.useMemo(
+      () => flattenTreeItems(tree, expandedFolders),
+      [tree, expandedFolders]
+    );
 
     // Get items for current folder (icons view)
     const currentFolderItems = React.useMemo(() => {
