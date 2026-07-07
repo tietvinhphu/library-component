@@ -1,0 +1,18 @@
+---
+description: Bắt buộc test + coverage + SonarQube trước khi báo hoàn thành code
+globs:
+  - registry/**
+  - src/lib/**
+  - src/components/**
+  - src/app/components/**
+  - .github/workflows/build.yml
+  - vitest.config.ts
+  - package.json
+alwaysApply: false
+---
+
+# Quality Gate
+
+Trước khi báo "xong" hoặc push, đọc và làm đủ checklist trong
+`.claude/skills/quality-gate/SKILL.md`. Không chép lại nội dung ở đây —
+đọc file đó trực tiếp mỗi lần, vì nó có thể đã cập nhật.

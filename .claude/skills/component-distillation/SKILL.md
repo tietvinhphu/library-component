@@ -106,7 +106,13 @@ này chỉ để trang catalog của chính mình đọc và hiển thị.
 thức. Tối thiểu phải điền: `name`, `title`, `type`, `description`,
 `categories`, `files`, và trong `meta`: `designRationale`, `inspirationSource`.
 
-### 8. Sinh JSON tĩnh và deploy
+### 8. Quality Gate — test & coverage (bắt buộc trước push)
+
+Đọc `.claude/skills/quality-gate/SKILL.md` và làm đủ checklist: viết test,
+`npm test`, `npm run test:coverage`, `npm run build`. Không push nếu test fail
+hoặc coverage file mới quá thấp.
+
+### 9. Sinh JSON tĩnh và deploy
 
 ```bash
 npx shadcn build      # sinh public/r/<name>.json từ registry.json

@@ -55,8 +55,18 @@ public/r/
 ```bash
 npm run dev              # chạy local
 npm run build             # build production
+npm test                  # chạy toàn bộ test (Vitest)
+npm run test:coverage     # test + coverage (dùng trước push / SonarCloud)
 npx shadcn build           # sinh public/r/*.json từ registry.json
 ```
+
+**Windows:** chạy npm từ `C:\Users\tiet.vinh-phu1\Downloads\library-component`, không từ UNC `\\localhost\c$\...`.
+
+## Quality Gate — sau khi viết/sửa code
+
+Trước khi báo hoàn thành hoặc `git push`, đọc và làm đủ checklist trong
+`.claude/skills/quality-gate/SKILL.md`: viết test → `npm test` → `npm run test:coverage`
+→ `npm run build` → CI SonarQube Cloud pass.
 
 ## Nguyên tắc làm việc
 

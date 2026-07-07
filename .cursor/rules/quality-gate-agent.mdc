@@ -1,0 +1,13 @@
+---
+description: >-
+  Kích hoạt khi user yêu cầu review thay đổi, commit, push, mở PR, hoặc báo task
+  xong — đọc checklist quality gate trước khi thực hiện. Dùng khi không có file
+  code nào khớp glob của rule quality-gate.
+alwaysApply: false
+---
+
+# Quality Gate — trước commit / push / PR
+
+Khi user yêu cầu review, commit, push, hoặc báo "xong", đọc và làm đủ checklist
+trong `.claude/skills/quality-gate/SKILL.md`. Không chép lại nội dung ở đây —
+đọc file đó trực tiếp mỗi lần, vì nó có thể đã cập nhật.
