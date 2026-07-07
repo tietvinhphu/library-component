@@ -10,6 +10,8 @@
     "registry/**/*.ts",
     "registry/**/*.tsx",
     "src/lib/**/*.ts",
+    "src/components/**/*.ts",
+    "src/components/**/*.tsx",
     "src/app/components/**/*.ts",
     "src/app/components/**/*.tsx",
     "**/*.test.ts",
