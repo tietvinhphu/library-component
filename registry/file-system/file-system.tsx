@@ -46,7 +46,7 @@ export type FileSystemView = "list" | "icons";
 
 export interface FileSystemProps {
   /** Flat list of items - hierarchy is derived from path */
-  items: FileSystemItem[];
+  items: Readonly<FileSystemItem[]>;
   /** Called when a file is clicked/double-clicked */
   onFileOpen?: (file: FileSystemItem, event: React.MouseEvent) => void;
   /** Called when folder is clicked to expand/collapse */
@@ -67,7 +67,7 @@ export interface FileSystemProps {
 
 /** Derive folder hierarchy from flat items using path */
 function buildTree(
-  items: FileSystemItem[]
+  items: ReadonlyArray<FileSystemItem>
 ): Map<string | null, FileSystemItem[]> {
   const byParentPath = new Map<string | null, FileSystemItem[]>();
 
@@ -518,7 +518,7 @@ const FileSystem = React.forwardRef<FileSystemRef, FileSystemProps>(
 
           {/* Breadcrumb segments */}
           {breadcrumbParts.map((part, index) => (
-            <React.Fragment key={index}>
+            <React.Fragment key={part}>
               <span className="text-muted-foreground text-xs">/</span>
               <button
                 onClick={() => navigateToBreadcrumb(index)}
