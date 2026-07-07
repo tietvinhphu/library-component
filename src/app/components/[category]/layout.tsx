@@ -4,7 +4,10 @@ interface ComponentsLayoutProps {
   modal: React.ReactNode;
 }
 
-export default function ComponentsLayout({ children, modal }: ComponentsLayoutProps) {
+export default function ComponentsLayout({
+  children,
+  modal,
+}: Readonly<ComponentsLayoutProps>) {
   return (
     <>
       {children}
