@@ -2,5 +2,6 @@
     "sonarlint.connectedMode.project": {
         "connectionId": "tietvinhphu",
         "projectKey": "tietvinhphu_library-component"
-    }
+    },
+    "files.eol": "\n"
 }
