@@ -100,19 +100,27 @@ Quan trọng: `docs.md` **không** đưa vào `files[]` của registry.json — 
 `shadcn add`. Docs tiếng Việt không nên xuất hiện trong repo của họ. File
 này chỉ để trang catalog của chính mình đọc và hiển thị.
 
-### 7. Thêm vào registry.json
+### 7. Tạo demo.tsx cho live preview
+
+Tạo `registry/<name>/demo.tsx` (`'use client'`, `export default`, tự setup
+state + data mẫu, render component với props tiêu biểu). Đăng ký vào
+`src/lib/component-demos.ts`. File này **KHÔNG** đưa vào `files[]` của
+registry.json (giống `docs.md` — chỉ phục vụ trang catalog). Component không
+có demo sẽ hiện fallback "Chưa có live demo".
+
+### 8. Thêm vào registry.json
 
 Đọc `.claude/docs/registry-schema.md` để biết đầy đủ field theo schema chính
 thức. Tối thiểu phải điền: `name`, `title`, `type`, `description`,
 `categories`, `files`, và trong `meta`: `designRationale`, `inspirationSource`.
 
-### 8. Quality Gate — test & coverage (bắt buộc trước push)
+### 9. Quality Gate — test & coverage (bắt buộc trước push)
 
 Đọc `.claude/skills/quality-gate/SKILL.md` và làm đủ checklist: viết test,
 `npm test`, `npm run test:coverage`, `npm run build`. Không push nếu test fail
 hoặc coverage file mới quá thấp.
 
-### 9. Sinh JSON tĩnh và deploy
+### 10. Sinh JSON tĩnh và deploy
 
 ```bash
 npx shadcn build      # sinh public/r/<name>.json từ registry.json
