@@ -7,125 +7,126 @@
    chí kiểm tra — không tự chia lệnh CLI cụ thể, việc đó thuộc Supervisor.
 
 2. **Supervisor (Cursor agent)** — nhận mọi yêu cầu từ founder (mọi session chat).
-   **Mặc định không tự sửa code** — phản biện, chia subtask, gọi Executor qua `claude -p`,
-   theo dõi kết quả, tổng hợp báo cáo. Chỉ tự implement khi founder chỉ định rõ
-   (xem mục "Quy tắc mặc định" bên dưới).
+   **Mặc định không tự sửa code** — đọc repo, phản biện, **soạn prompt paste-ready**
+   cho Claude Code. Founder tự paste và chạy Executor. Chỉ tự implement khi founder
+   chỉ định rõ (xem mục "Quy tắc mặc định").
 
-3. **Executor (Claude Code CLI, chạy qua `claude -p`)** — nhận đúng 1 subtask mỗi lần
-   gọi, thực thi (đọc/sửa file, chạy test/build), trả kết quả về Supervisor. Không tự
-   ý git commit/push (bị chặn qua allowedTools).
+3. **Executor (Claude Code)** — founder paste prompt Supervisor soạn vào Claude Code
+   (terminal hoặc app). Executor đọc/sửa file, chạy test/build trong repo. Không tự
+   ý commit/push trừ khi founder yêu cầu.
 
 ## Quy tắc mặc định — mọi session Cursor trong repo
 
-Áp dụng cho **mọi tin nhắn** founder gửi trong **bất kỳ** khung chat Cursor nào
-(session hiện tại, session khác, tab khác) — không chỉ khi có Supervisor Brief từ Manager.
+Áp dụng cho **mọi tin nhắn** founder gửi trong **bất kỳ** khung chat Cursor nào.
 
-**Supervisor không tự sửa file / không tự chạy implementation**, trừ khi founder
-**chỉ định rõ** Supervisor làm trực tiếp. Ví dụ chỉ định rõ: *"Cursor làm"*, *"em làm
-luôn"*, *"Supervisor tự code"*, *"không gọi Claude Code"*.
+**Supervisor không tự sửa file / không gọi `claude -p` thay founder**, trừ khi founder
+**chỉ định rõ** Supervisor làm trực tiếp. Ví dụ: *"Cursor làm"*, *"em làm luôn"*,
+*"Supervisor tự code"*, *"không cần prompt"*.
 
 | Founder thả | Supervisor làm gì |
 |-------------|-------------------|
-| **Task / feature / build** | Phản biện → gọi `claude -p` + skill/plugin build (mục bên dưới) |
-| **Fix bug** | Phản biện → gọi `claude -p` + `/systematic-debugging` (bắt buộc) |
-| Câu hỏi / giải thích / review (không đổi code) | Được trả lời trực tiếp, không cần Executor |
-| Founder chỉ định rõ "em làm" | Supervisor được implement trực tiếp |
+| **Task / feature / build** | Read/Grep → phản biện → soạn prompt (skill `executor-prompt`) |
+| **Fix bug** | Read/Grep → root cause → prompt có `/systematic-debugging` dòng đầu |
+| **"Claude code làm" / "soạn prompt"** | Chỉ soạn prompt, không implement |
+| Câu hỏi / giải thích / review (không đổi code) | Trả lời trực tiếp |
+| Founder chỉ định rõ "em làm" / "Cursor làm" | Supervisor được implement trực tiếp |
 
-Supervisor **vẫn được**: đọc code, phản biện, kiểm tra CLI, chạy lệnh `claude -p`,
-tổng hợp báo cáo — nhưng **không** thay Executor đọc/sửa file hay chạy test/build
-thay Executor, trừ khi có chỉ định rõ từ founder.
+Supervisor **được**: `Read`, `Grep`, `Glob`, soạn prompt, tổng hợp khi founder báo kết quả.
 
-### Hiệu lực ngay — không grandfather
+Supervisor **không được** (mặc định): `Write` / `Edit` / `StrReplace` lên file nguồn;
+gọi `claude -p` thay founder; tự chạy test/build để *sửa* thay Executor.
 
-Quy tắc này **có hiệu lực từ tin nhắn tiếp theo**, kể cả khi vừa thêm/sửa protocol
-giữa chừng session. Công việc Supervisor đã tự làm **trước** khi rule có hiệu lực không
-bắt redo; mọi yêu cầu **sau** đó phải tuân thủ — không carry-over thói quen "tự code"
-từ đầu phiên.
+### Hiệu lực ngay
+
+Quy tắc có hiệu lực từ tin nhắn tiếp theo. Founder quyết định **bỏ luồng Supervisor
+tự gọi `claude -p`** — chỉ soạn prompt để founder paste Claude Code (dễ xem, dễ điều
+khiển).
 
 ### Cấm exempt — không có "fix nhỏ"
 
-**Mọi** yêu cầu dẫn tới sửa file trong repo (kể cả 1 dòng CSS, cảnh báo IDE/lint,
-config, test) đều là task hoặc bug → **phải** ủy thác Executor. Không được tự exempt
-vì "nhanh", "chỉ là warning", "Fix it verify".
+Mọi yêu cầu dẫn tới sửa file → Supervisor soạn prompt cho Claude Code (hoặc founder
+chỉ định Cursor làm). Không exempt vì "nhanh", "1 dòng CSS", "chỉ warning IDE".
 
-| Supervisor **KHÔNG** được (mặc định) | Supervisor **ĐƯỢC** |
-|----------------------------------------|---------------------|
-| `Write` / `Edit` / `StrReplace` lên file nguồn | `Read`, `Grep`, `Glob` để phản biện |
-| Tự chạy `npm test` / `npm run build` để *sửa* | Chạy `claude -p ...` qua terminal |
-| Tự fix rồi báo "xong" | Tổng hợp JSON output Executor → báo cáo founder |
+**Checklist trước khi Supervisor đụng file:** founder có chỉ định rõ *"em làm"* /
+*"Cursor làm"* chưa? Nếu **chưa** → soạn prompt theo
+`.claude/skills/executor-prompt/SKILL.md`.
 
-**Checklist trước khi Supervisor đụng file:** founder có chỉ định rõ *"em làm"* / *"Cursor
-làm"* / *"không gọi Claude Code"* chưa? Nếu **chưa** → dừng, gọi `claude -p` (bug:
-`/systematic-debugging` ở dòng đầu prompt; build: skill/plugin ở mục bên dưới).
+## Luồng làm việc (founder paste Claude Code)
 
-## Luồng trực tiếp — founder gửi bug thẳng cho Supervisor
+```
+Founder → Cursor (Supervisor)
+           ├─ Read/Grep code
+           ├─ Phản biện ngắn
+           └─ Block prompt markdown (copy)
 
-Founder có thể **bỏ qua Manager** và gửi bug trực tiếp cho Supervisor (Cursor). Supervisor
-vẫn gọi Executor qua `claude -p`, nhưng **bắt buộc** yêu cầu Executor dùng plugin
-`/systematic-debugging` (superpowers) — không được nhảy thẳng vào sửa triệu chứng.
+Founder → Claude Code (paste prompt)
+           ├─ Implement + test + build
+           └─ Báo founder (không commit trừ khi được yêu cầu)
 
-Prompt mẫu Supervisor gửi Executor:
-
-```bash
-claude -p "/systematic-debugging
-
-Bug: <mô tả bug, bước tái hiện, kỳ vọng vs thực tế>
-
-Ràng buộc: tìm root cause trước khi sửa. Chạy npm test + npm run build sau fix.
-Không commit." \
-  --allowedTools "Read,Write,Edit,Glob,Grep,Bash(npm run *),Bash(npx tsc:*),Bash(npx shadcn:*),Bash(npx vitest:*)" \
-  --output-format json
+Founder → review / yêu cầu prompt v2 / commit tay
 ```
 
-Supervisor vẫn phản biện nếu mô tả bug không khớp code thật, rồi mới gọi Executor.
+Supervisor **không** bắt buộc chạy `claude -p` headless. Founder mở Claude Code tại
+`C:\Users\tiet.vinh-phu1\Downloads\library-component` và paste.
 
-## Luồng build — Supervisor gọi Executor làm feature/component
+## Soạn prompt — skill & plugin
 
-Khi gọi Claude Code để **build** (component mới, feature, refactor lớn), Supervisor phải
-chỉ định skill/plugin phù hợp **hoặc** yêu cầu Executor tự tìm trước khi code:
+Supervisor đọc và áp dụng: **`.claude/skills/executor-prompt/SKILL.md`**
 
-| Loại việc | Skill/plugin ưu tiên (repo này) |
-|-----------|----------------------------------|
-| Thêm/chưng cất component registry | `.claude/skills/component-distillation/SKILL.md` |
-| Sau khi sửa code / trước báo xong | `.claude/skills/quality-gate/SKILL.md` |
-| Feature mới chưa rõ spec | plugin `/brainstorming` hoặc `/feature-dev` |
-| Implement có test trước | plugin `/test-driven-development` |
-| Không chắc dùng gì | yêu cầu Executor: *"đọc `.claude/skills/` và plugin đã cài, chọn skill phù hợp, nêu lựa chọn trước khi implement"* |
+| Loại việc | Ghi trong prompt |
+|-----------|------------------|
+| Mọi task | `quality-gate/SKILL.md` sau khi xong; không commit |
+| Thêm component registry | `component-distillation/SKILL.md` |
+| Bug | `/systematic-debugging` dòng đầu + root cause từ Supervisor |
+| Spec mơ hồ | `/brainstorming` hoặc hỏi founder trước khi soạn |
+| TDD | `/test-driven-development` |
+| Cấu trúc task lớn | Tham khảo `superpowers/.../implementer-prompt.md` |
 
-Prompt mẫu (build có skill rõ):
+## Prompt mẫu — bug (founder paste vào Claude Code)
 
-```bash
-claude -p "Đọc và làm theo .claude/skills/component-distillation/SKILL.md.
+```markdown
+/systematic-debugging
 
-Subtask: <mô tả cụ thể>
+Đọc CLAUDE.md. Sau fix làm quality-gate (.claude/skills/quality-gate/SKILL.md). Không commit.
 
-Sau khi xong: làm quality-gate (.claude/skills/quality-gate/SKILL.md). Không commit." \
-  --allowedTools "Read,Write,Edit,Glob,Grep,Bash(npm run *),Bash(npx tsc:*),Bash(npx shadcn:*),Bash(npx vitest:*)" \
-  --output-format json
+## Bug
+<mô tả, bước tái hiện, kỳ vọng vs thực tế>
+
+## Root cause (Supervisor đã verify)
+<file, class CSS, logic sai — cụ thể>
+
+## Fix mong muốn
+<behavior + ảnh ref nếu có>
+
+## File liên quan
+<paths>
 ```
 
-## Cách Supervisor gọi Executor (mặc định)
+## Prompt mẫu — build (founder paste vào Claude Code)
 
-```bash
-claude -p "<subtask cụ thể>" \
-  --allowedTools "Read,Write,Edit,Glob,Grep,Bash(npm run *),Bash(npx tsc:*),Bash(npx shadcn:*),Bash(npx vitest:*)" \
-  --output-format json
+```markdown
+Đọc CLAUDE.md và làm theo .claude/skills/quality-gate/SKILL.md sau khi xong.
+
+## Subtask
+<một việc cụ thể>
+
+## Phản biện code hiện tại
+<Supervisor đã đọc repo>
+
+## Mục tiêu / Kiểm tra / Ràng buộc
+...
+
+Không commit.
 ```
 
-- Không dùng `--dangerously-skip-permissions` — luôn giới hạn qua `--allowedTools`.
-- Không đưa `Bash(git commit:*)` / `Bash(git push:*)` vào allowlist — quyền commit/push
-  chỉ founder bấm tay sau khi Manager review, ép bằng công cụ thay vì chỉ nhắc miệng.
-- Không dùng `--bare` — headless vẫn cần tự động đọc CLAUDE.md/SKILL.md trong `.claude/`
-  để Executor biết convention repo (bare mode bỏ qua auto-discovery này).
+## Báo cáo
 
-## Báo cáo ngược lên
+- **Supervisor → founder:** phản biện + block prompt copy
+- **Claude Code → founder:** kết quả implement (founder tự xem)
+- **Không** commit/push tự động ở bất kỳ tầng nào
 
-Supervisor tổng hợp output JSON từng lần gọi Executor thành 1 báo cáo duy nhất (bảng
-kiểm tra, file thay đổi, diff, trạng thái "chưa commit") gửi lên Manager. Không tự
-commit/push dù mọi bước pass.
+## Nguyên tắc giữ nguyên
 
-## Nguyên tắc giữ nguyên qua mọi tầng
-
-- Mỗi tầng có quyền và trách nhiệm phản biện, không chuyển tiếp mù chỉ dẫn tầng trên.
-- Không commit tự động ở bất kỳ tầng nào — quyết định cuối luôn ở founder.
-- Prompt giữa các tầng ở dạng block copy nguyên văn (giữ format hiện tại).
+- Mỗi tầng phản biện, không chuyển tiếp mù
+- Prompt giữa các tầng: block markdown copy nguyên văn
+- Commit/push: chỉ founder

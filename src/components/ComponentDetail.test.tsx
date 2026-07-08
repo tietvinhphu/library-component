@@ -15,6 +15,20 @@ vi.mock("./InstallCommandCopy", () => ({
   ),
 }));
 
+vi.mock("./MarkdownDocs", () => ({
+  default: ({ content }: { content: string }) => (
+    <div data-testid="markdown-docs">{content.includes("## Mô tả") ? "docs" : ""}</div>
+  ),
+}));
+
+vi.mock("./HighlightedSource", () => ({
+  default: () => <div data-testid="highlighted-source">source</div>,
+}));
+
+vi.mock("./TableOfContents", () => ({
+  default: () => null,
+}));
+
 describe("ComponentDetail", () => {
   it("renders component metadata and demo for known component", () => {
     render(<ComponentDetail name="file-system" />);
@@ -26,10 +40,9 @@ describe("ComponentDetail", () => {
     expect(screen.getByTestId("install-copy")).toHaveTextContent(
       "npx shadcn@latest add https://your-domain.com/r/file-system.json"
     );
-    expect(screen.getByRole("heading", { name: "Mô tả" })).toBeInTheDocument();
+    expect(screen.getByTestId("markdown-docs")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Source Code" })).toBeInTheDocument();
-    expect(screen.getAllByRole("table").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByRole("columnheader", { name: "Tên" })).toBeInTheDocument();
+    expect(screen.getByTestId("highlighted-source")).toBeInTheDocument();
   });
 
   it("shows not found message for unknown component", () => {

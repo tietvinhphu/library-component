@@ -76,14 +76,11 @@ Yêu cầu kỹ thuật bắt buộc:
 
 ### 6. Viết docs.md — tài liệu tiếng Việt cho trang catalog
 
-Tạo `registry/<name>/docs.md`, theo khung 4 phần:
+Tạo `registry/<name>/docs.md`, theo khung 3 phần (bỏ `# title` và `## Cài đặt` vì trùng với hero ComponentDetail):
 
 ```
 ## Mô tả
 1-2 câu, component này giải quyết vấn đề gì.
-
-## Cài đặt
-npx shadcn@latest add https://<domain>/r/<name>.json
 
 ## Props
 | Tên | Kiểu | Mặc định | Mô tả |
@@ -94,6 +91,12 @@ npx shadcn@latest add https://<domain>/r/<name>.json
 // đoạn code ví dụ thực tế
 ```
 ```
+
+**Lưu ý quan trọng về docs.md:**
+- **Không có `# title`** — registry field `title` đã render h1 trong hero ComponentDetail.
+- **Không có `## Cài đặt`** — ComponentDetail render sẵn `InstallCommandCopy`.
+- **Không có dòng Dependencies** — `component.dependencies` render ở hero.
+- Nếu muốn mô tả chi tiết về dependencies (VD: `lucide-react`), ghi trong phần `## Mô tả`.
 
 Quan trọng: `docs.md` **không** đưa vào `files[]` của registry.json — field
 đó là danh sách file sẽ bị copy thẳng vào project của người cài khi họ chạy

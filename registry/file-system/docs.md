@@ -1,5 +1,3 @@
-# File System
-
 ## Mô tả
 
 Component hiển thị cây thư mục dạng danh sách hoặc icons với drill-down navigation, lấy dữ liệu từ flat array và tự động suy ra hierarchy từ path. Callback `onFileOpen` giúp bạn xử lý mở file theo cách riêng — không bị trói buộc vào PDF/DOCX viewer nặng.
@@ -7,14 +5,6 @@ Component hiển thị cây thư mục dạng danh sách hoặc icons với dril
 **Icons view:** click folder → drill-down vào folder đó (giống Finder macOS). Dùng breadcrumb hoặc nút Back để quay lại.
 
 **List view:** click folder → expand tại chỗ, hiện nested items.
-
-## Cài đặt
-
-```bash
-npx shadcn@latest add https://your-domain.com/r/file-system.json
-```
-
-**Dependencies:** `lucide-react` (đã được tự động cài kèm)
 
 ## Props
 

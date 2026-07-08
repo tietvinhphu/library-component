@@ -1,20 +1,16 @@
 ---
 description: >-
-  Mọi session Cursor trong repo: task/bug mặc định ủy thác Claude Code (`claude -p`),
-  không tự sửa code trừ khi founder chỉ định rõ. Bug: /systematic-debugging. Build:
-  skill/plugin phù hợp. Không exempt fix nhỏ/IDE. Đọc protocol trước khi làm.
+  Mọi session Cursor: task/bug mặc định SOẠN PROMPT cho founder paste Claude Code —
+  không tự sửa code, không gọi claude -p, trừ khi founder chỉ định "em làm"/"Cursor làm".
 alwaysApply: true
 ---
 
-# Điều phối 3 tầng — Supervisor (Cursor)
+# Điều phối — Supervisor (Cursor)
 
-**Mặc định:** founder thả task hoặc fix bug → Supervisor **gọi `claude -p`**, không tự
-implement. Chỉ tự sửa code khi founder chỉ định rõ (*"em làm"*, *"Cursor làm"*, *"không
-gọi Claude Code"*, ...).
+**Mặc định:** task/bug → **soạn prompt paste-ready** cho Claude Code (đọc
+`.claude/skills/executor-prompt/SKILL.md`). **Không** gọi `claude -p` thay founder.
+**Không** Write/Edit file implementation.
 
-**Trước khi Write/Edit bất kỳ file nào:** đọc checklist trong
-`.claude/docs/coordination-protocol.md` (mục *Cấm exempt*). Không có chỉ định rõ từ
-founder → **dừng**, gọi Executor.
+Chỉ tự implement khi founder chỉ định rõ: *"em làm"*, *"Cursor làm"*, *"không cần prompt"*.
 
-Áp dụng **mọi khung chat**, **hiệu lực ngay** từ tin nhắn tiếp theo. Đọc và tuân thủ
-đầy đủ `.claude/docs/coordination-protocol.md` — không chép lại nội dung ở đây.
+Trước Write/Edit: đọc `.claude/docs/coordination-protocol.md`. Hiệu lực ngay, mọi chat.

@@ -529,6 +529,19 @@ The system uses **hairline-only depth**. No drop shadows, no elevation tiers. Ca
 7. Cursor Orange stays scarce.
 8. Timeline pastels stay scoped to in-product agent visualizations.
 
+## Addendum — Terminal code blocks (component catalog)
+
+> **Quyết định riêng cho site catalog này** — khác mục `code-block` / `ide-pane` nền sáng ở trên.
+
+Trên trang chi tiết component (`ComponentDetail`), **fenced code trong docs.md** và **khối Source Code** dùng style **terminal tối** — “đảo tối” có chủ đích trên nền kem `{colors.canvas}`:
+
+- Nền code: `#1e1e1e` (không dùng `{colors.canvas-soft}` hay `{colors.surface-card}`).
+- Syntax highlighting: Shiki theme `github-dark` (tsx / ts / bash / json).
+- Title bar macOS: 3 chấm `#ff5f56` / `#ffbd2e` / `#27c93f`, label ngôn ngữ góc phải.
+- Inline code trong prose (`\`prop\``) **giữ nền sáng** `{colors.canvas-soft}` — chỉ fenced block + source mới tối.
+
+Khi chưng cất component mới, đừng áp dụng lại spec `code-block` nền trắng cho hai vùng trên.
+
 ## Known Gaps
 
 - CursorGothic is a licensed typeface; Inter is the substitute.

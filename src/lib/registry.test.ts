@@ -38,7 +38,7 @@ describe("registry", () => {
 
   it("reads component docs when present", () => {
     const docs = getComponentDocs("file-system");
-    expect(docs).toContain("File System");
+    expect(docs).toContain("## Mô tả");
     expect(getComponentDocs("missing-component")).toBeNull();
   });
 

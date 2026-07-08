@@ -216,16 +216,139 @@
     border-radius: var(--radius-pill);
   }
 
-  .code-block {
+  .code-terminal {
+    margin: 16px 0 24px;
+    border: 1px solid #2d2d2d;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background-color: #1e1e1e;
+  }
+
+  .code-terminal-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    background-color: #2d2d2d;
+    border-bottom: 1px solid #3d3d3d;
+  }
+
+  .code-terminal-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .code-terminal-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .code-terminal-dot--red {
+    background-color: #ff5f56;
+  }
+
+  .code-terminal-dot--yellow {
+    background-color: #ffbd2e;
+  }
+
+  .code-terminal-dot--green {
+    background-color: #27c93f;
+  }
+
+  .code-terminal-language {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+    color: #9d9d9d;
+    text-transform: lowercase;
+  }
+
+  .code-terminal-titlebar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .code-terminal-body figure,
+  .code-terminal-highlight {
+    margin: 0;
+  }
+
+  .code-terminal-body pre,
+  .code-terminal-highlight pre {
+    margin: 0;
+    padding: 16px 20px;
+    overflow: visible;
     font-family: var(--font-mono);
     font-size: 13px;
     line-height: 1.5;
-    color: var(--ink);
-    background-color: var(--surface-card);
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    overflow-x: auto;
+    background-color: #1e1e1e !important;
+    border: none;
+    border-radius: 0;
+  }
+
+  .code-terminal-body code,
+  .code-terminal-highlight code {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.5;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Line numbers for shiki output - single unified approach */
+  .shiki code {
+    counter-reset: line;
+  }
+
+  .shiki .line,
+  .code-terminal-highlight .line {
+    display: block;
+    padding-left: 50px;
+    padding-right: 16px;
+    border-left: 3px solid transparent;
+    position: relative;
+    /* REMOVED: text-align: right was causing code to be right-aligned */
+    text-align: left;
+  }
+
+  .shiki .line::before,
+  .code-terminal-highlight .line::before {
+    counter-increment: line;
+    content: counter(line);
+    position: absolute;
+    left: 0;
+    width: 36px;
+    padding-right: 8px;
+    text-align: right;
+    color: #5d5d5d;
+    user-select: none;
+    border-right: 1px solid #3d3d3d;
+  }
+
+  /* Code terminal top bar */
+  .code-terminal-top-bar {
+    position: absolute;
+    top: 10px;
+    right: 60px;
+    z-index: 10;
+  }
+
+  /* Markdown code blocks with copy button */
+  .code-block-with-copy {
+    position: relative;
+    margin: 16px 0 24px;
+  }
+
+  .code-block-with-copy .code-terminal {
+    margin: 0;
   }
 
   .text-display-sm {
@@ -308,32 +431,13 @@
     font-weight: 600;
   }
 
-  .prose-catalog code {
+  .prose-catalog :not(pre) > code {
     font-family: var(--font-mono);
     font-size: 13px;
     background-color: var(--canvas-soft);
     border: 1px solid var(--hairline);
     border-radius: var(--radius-xs);
     padding: 2px 6px;
-  }
-
-  .prose-catalog pre {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--ink);
-    background-color: var(--surface-card);
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    overflow-x: auto;
-    margin: 16px 0;
-  }
-
-  .prose-catalog pre code {
-    background: none;
-    border: none;
-    padding: 0;
   }
 
   .prose-catalog table {
@@ -377,5 +481,250 @@
     border: 1px solid var(--hairline);
     border-radius: var(--radius-md);
     padding: 10px 16px;
+  }
+
+  /* Component detail layout with TOC */
+  .component-detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .component-detail-main {
+    min-width: 0;
+    max-width: 800px;
+  }
+
+  .component-detail-toc {
+    position: sticky;
+    top: 24px;
+    height: fit-content;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+  }
+
+  /* Table of contents */
+  .toc-nav {
+    padding: 0;
+  }
+
+  .toc-title {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--muted-text);
+    margin-bottom: 12px;
+    padding-left: 12px;
+  }
+
+  .toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc-item {
+    margin: 0;
+  }
+
+  .toc-level-1 {
+    padding-left: 0;
+  }
+
+  .toc-level-2 {
+    padding-left: 12px;
+  }
+
+  .toc-level-3 {
+    padding-left: 24px;
+  }
+
+  .toc-link {
+    display: block;
+    padding: 6px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--body);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .toc-link:hover {
+    color: var(--ink);
+    background-color: var(--canvas-soft);
+  }
+
+  .toc-item-active .toc-link {
+    color: var(--ink);
+    font-weight: 500;
+    border-left-color: var(--primary);
+    background-color: var(--canvas-soft);
+  }
+
+  /* Code copy button */
+  .code-copy-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+    color: #d4d4d4;
+    background-color: #3a3a3a;
+    border: 1px solid #5d5d5d;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .code-copy-button:hover {
+    color: #ffffff;
+    border-color: #7a7a7a;
+    background-color: #4d4d4d;
+  }
+
+  .code-copy-button svg {
+    flex-shrink: 0;
+  }
+
+  /* ============================================
+     COLLAPSIBLE CODE TERMINAL STYLES
+     ============================================ */
+
+  /* Wrapper states */
+  .code-terminal-wrapper {
+    position: relative;
+    margin: 16px 0 24px;
+  }
+
+  /* Collapsed: show preview only with fade */
+  .code-terminal-wrapper.collapsed .code-terminal-content {
+    max-height: 200px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .code-terminal-wrapper.collapsed .code-terminal-content::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, #1e1e1e 70%);
+    pointer-events: none;
+  }
+
+  /* Collapsed: Overlay with centered "View Code" pill */
+  .code-terminal-collapsed-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .code-terminal-collapsed-overlay .code-terminal-view-btn {
+    pointer-events: auto;
+    background-color: #ffffff;
+    color: #26251e;
+    border: 1px solid #cfcdc4;
+  }
+
+  .code-terminal-collapsed-overlay .code-terminal-view-btn:hover {
+    background-color: #f7f7f4;
+    border-color: #26251e;
+  }
+
+  /* Expanded: single scroll container */
+  .code-terminal-wrapper.expanded .code-terminal-body {
+    max-height: 480px;
+    overflow: auto;
+  }
+
+  /* Footer bar */
+  .code-terminal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background-color: #2d2d2d;
+    border-top: 1px solid #3d3d3d;
+  }
+
+  .code-terminal-footer-left,
+  .code-terminal-footer-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .code-terminal-footer-left {
+    flex: 1;
+  }
+
+  .code-terminal-footer-right {
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  /* View Code / Collapse buttons */
+  .code-terminal-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    color: #26251e;
+    background-color: #ffffff;
+    border: 1px solid #cfcdc4;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .code-terminal-view-btn:hover {
+    background-color: #f7f7f4;
+    border-color: #26251e;
+  }
+
+  /* Collapse button */
+  .code-terminal-collapse-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    color: #c0c0c0;
+    background-color: #3d3d3d;
+    border: 1px solid #5d5d5d;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .code-terminal-collapse-btn:hover {
+    background-color: #4d4d4d;
+    border-color: #6d6d6d;
+    color: #e0e0e0;
+  }
+
+  .code-terminal-view-btn svg,
+  .code-terminal-collapse-btn svg {
+    flex-shrink: 0;
   }
 }

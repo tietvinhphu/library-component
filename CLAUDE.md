@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-> Điều phối 3 tầng: Cursor mặc định **gọi `claude -p`** cho task/bug — không tự sửa file (kể cả fix nhỏ/IDE) trừ khi founder chỉ định rõ. Bug: `/systematic-debugging` đầu prompt. Build: skill trong `.claude/skills/`. Chi tiết: `.claude/docs/coordination-protocol.md`.
+> Điều phối 3 tầng: Cursor **soạn prompt** cho founder paste Claude Code — không tự sửa file, không gọi `claude -p` thay founder (trừ khi founder nói "em làm"/"Cursor làm"). Soạn prompt: `.claude/skills/executor-prompt/SKILL.md`. Protocol: `.claude/docs/coordination-protocol.md`.
 
 Bối cảnh nền cho Claude Code khi làm việc trong repo này. Đọc file này mỗi phiên, bất kể đang làm task gì.
 
