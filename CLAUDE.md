@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+> Điều phối 3 tầng: Cursor mặc định **gọi `claude -p`** cho task/bug — không tự sửa file (kể cả fix nhỏ/IDE) trừ khi founder chỉ định rõ. Bug: `/systematic-debugging` đầu prompt. Build: skill trong `.claude/skills/`. Chi tiết: `.claude/docs/coordination-protocol.md`.
+
 Bối cảnh nền cho Claude Code khi làm việc trong repo này. Đọc file này mỗi phiên, bất kể đang làm task gì.
 
 ## Repo này là gì
@@ -42,6 +44,7 @@ public/r/
   skills/component-distillation/SKILL.md
   docs/registry-schema.md
   docs/license-checklist.md
+  docs/coordination-protocol.md
 ```
 
 ## Quy ước đặt tên

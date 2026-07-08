@@ -11,10 +11,10 @@ export default async function CategoryPage({ params }: Readonly<CategoryPageProp
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6 capitalize">
+      <h1 className="text-display-sm mb-8 capitalize">
         {category.replaceAll("-", " ")}
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {components.map((component) => {
           const previewImage = getPreviewImage(component.name);
           return (
@@ -23,9 +23,8 @@ export default async function CategoryPage({ params }: Readonly<CategoryPageProp
               href={`/components/${category}/${component.name}`}
               className="block"
             >
-              <div className="border rounded-lg overflow-hidden hover:border-primary transition-colors">
-                {/* Thumbnail */}
-                <div className="h-[160px] bg-muted/30 flex items-center justify-center">
+              <div className="feature-card overflow-hidden p-0">
+                <div className="h-[160px] bg-canvas-soft flex items-center justify-center border-b border-hairline">
                   {previewImage ? (
                     <img
                       src={previewImage}
@@ -33,15 +32,12 @@ export default async function CategoryPage({ params }: Readonly<CategoryPageProp
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <span className="text-muted-foreground text-sm">
-                      {component.title}
-                    </span>
+                    <span className="text-body-md">{component.title}</span>
                   )}
                 </div>
-                {/* Info */}
-                <div className="p-4">
-                  <h2 className="font-semibold mb-1">{component.title}</h2>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                <div className="p-6">
+                  <h2 className="text-title-md mb-2">{component.title}</h2>
+                  <p className="text-body-md line-clamp-2">
                     {component.description}
                   </p>
                 </div>
@@ -51,7 +47,7 @@ export default async function CategoryPage({ params }: Readonly<CategoryPageProp
         })}
       </div>
       {components.length === 0 && (
-        <p className="text-muted-foreground">No components found.</p>
+        <p className="text-body-md">No components found.</p>
       )}
     </div>
   );

@@ -4,6 +4,10 @@
         "projectKey": "tietvinhphu_library-component"
     },
     "files.eol": "\n",
+    "css.lint.unknownAtRules": "ignore",
+    "files.associations": {
+        "*.css": "tailwindcss"
+    },
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },

@@ -1,0 +1,20 @@
+---
+description: >-
+  Mọi session Cursor trong repo: task/bug mặc định ủy thác Claude Code (`claude -p`),
+  không tự sửa code trừ khi founder chỉ định rõ. Bug: /systematic-debugging. Build:
+  skill/plugin phù hợp. Không exempt fix nhỏ/IDE. Đọc protocol trước khi làm.
+alwaysApply: true
+---
+
+# Điều phối 3 tầng — Supervisor (Cursor)
+
+**Mặc định:** founder thả task hoặc fix bug → Supervisor **gọi `claude -p`**, không tự
+implement. Chỉ tự sửa code khi founder chỉ định rõ (*"em làm"*, *"Cursor làm"*, *"không
+gọi Claude Code"*, ...).
+
+**Trước khi Write/Edit bất kỳ file nào:** đọc checklist trong
+`.claude/docs/coordination-protocol.md` (mục *Cấm exempt*). Không có chỉ định rõ từ
+founder → **dừng**, gọi Executor.
+
+Áp dụng **mọi khung chat**, **hiệu lực ngay** từ tin nhắn tiếp theo. Đọc và tuân thủ
+đầy đủ `.claude/docs/coordination-protocol.md` — không chép lại nội dung ở đây.

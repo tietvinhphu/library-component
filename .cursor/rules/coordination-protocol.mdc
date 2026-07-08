@@ -1,0 +1,13 @@
+---
+description: Bắt buộc đọc coordination protocol khi Supervisor phân việc hoặc gọi Executor
+globs:
+  - .claude/docs/coordination-protocol.md
+  - CLAUDE.md
+alwaysApply: false
+---
+
+# Điều phối 3 tầng
+
+Trước khi phân việc Executor, trước khi Write/Edit file, hoặc gọi `claude -p`, đọc và
+tuân thủ `.claude/docs/coordination-protocol.md` — đặc biệt mục *Quy tắc mặc định* và
+*Cấm exempt*. Không chép lại nội dung ở đây — đọc file đó trực tiếp mỗi lần.
