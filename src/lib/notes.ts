@@ -70,6 +70,10 @@ function parseFrontmatter(raw: string): {
   return { data, content: match[2] };
 }
 
+function asOptionalString(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
 function parseNote(raw: { slug: string; raw: string }): Note | null {
   const { slug, raw: content } = raw;
   const { data, content: body } = parseFrontmatter(content);
@@ -97,7 +101,7 @@ function parseNote(raw: { slug: string; raw: string }): Note | null {
     tags: Array.isArray(data.tags) ? (data.tags as string[]) : undefined,
     date: String(data.date),
     description: String(data.description),
-    source: data.source ? String(data.source) : undefined,
+    source: asOptionalString(data.source),
     content: body.trim(),
   };
 }
