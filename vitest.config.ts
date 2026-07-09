@@ -17,6 +17,7 @@ export default defineConfig({
         "src/lib/**/*.ts",
         "src/components/**/*.tsx",
         "src/app/components/**/*.tsx",
+        "src/app/notes/**/*.tsx",
       ],
       exclude: [
         "**/*.test.ts",
