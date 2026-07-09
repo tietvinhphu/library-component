@@ -60,10 +60,14 @@ Founder → Cursor (Supervisor)
            └─ Block prompt markdown (copy)
 
 Founder → Claude Code (paste prompt)
-           ├─ Implement + test + build
+           ├─ Implement + test + build (quality-gate)
            └─ Báo founder (không commit trừ khi được yêu cầu)
 
-Founder → review / yêu cầu prompt v2 / commit tay
+Founder → Claude Code (Codex plugin) — **bắt buộc trước commit/push**
+           ├─ /codex:review (hoặc --base main / --background nếu task lớn)
+           └─ Sửa issue Codex chỉ ra → chạy lại quality-gate nếu có sửa code
+
+Founder → review / commit / push
 ```
 
 Supervisor **không** bắt buộc chạy `claude -p` headless. Founder mở Claude Code tại
@@ -76,6 +80,7 @@ Supervisor đọc và áp dụng: **`.claude/skills/executor-prompt/SKILL.md`**
 | Loại việc | Ghi trong prompt |
 |-----------|------------------|
 | Mọi task | `quality-gate/SKILL.md` sau khi xong; không commit |
+| Sau Executor xong (founder chạy) | `codex-review-gate/SKILL.md` — `/codex:review` trước commit |
 | Thêm component registry | `component-distillation/SKILL.md` |
 | Bug | `/systematic-debugging` dòng đầu + root cause từ Supervisor |
 | Spec mơ hồ | `/brainstorming` hoặc hỏi founder trước khi soạn |

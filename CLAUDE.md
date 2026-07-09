@@ -67,9 +67,13 @@ npx shadcn build           # sinh public/r/*.json từ registry.json
 
 ## Quality Gate — sau khi viết/sửa code
 
-Trước khi báo hoàn thành hoặc `git push`, đọc và làm đủ checklist trong
+Trước khi báo hoàn thành, đọc và làm đủ checklist trong
 `.claude/skills/quality-gate/SKILL.md`: viết test → `npm test` → `npm run test:coverage`
-→ `npm run build` → CI SonarQube Cloud pass.
+→ `npm run build`.
+
+**Trước `git push`:** founder chạy `/codex:review` trong Claude Code theo
+`.claude/skills/codex-review-gate/SKILL.md` (plugin: `.claude/docs/codex-plugin-setup.md`).
+Sau push, CI SonarQube Cloud phải pass.
 
 ## Nguyên tắc làm việc
 

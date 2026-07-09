@@ -18,6 +18,7 @@ Supervisor **không** gọi `claude -p` và **không** tự sửa file implement
 | Nguồn | Dùng cho |
 |-------|----------|
 | `.claude/skills/quality-gate/SKILL.md` | Luôn nhắc Executor chạy test/coverage/build trước khi báo xong |
+| `.claude/skills/codex-review-gate/SKILL.md` | Nhắc founder chạy `/codex:review` sau Executor — trước commit |
 | `.claude/skills/component-distillation/SKILL.md` | Thêm/chưng cất component registry |
 | Plugin `/systematic-debugging` | **Bug** — dòng đầu prompt, root cause trước khi sửa |
 | Plugin `/test-driven-development` | Feature phức tạp, cần test trước |
@@ -74,9 +75,10 @@ URL hoặc bước: <vd. /components/file-system/file-system → Source Code>
 - **KHÔNG commit, KHÔNG push**
 
 ## Báo cáo khi xong
-- Root cause đã fix (1–2 câu)
+- Root cause đã fix (1–2 câu) — nếu là bug
 - File đổi
 - Kết quả test/build
+- **Dừng ở đây** — founder chạy `/codex:review` theo `.claude/skills/codex-review-gate/SKILL.md` trước commit
 ```
 
 ## Checklist chất lượng trước khi giao prompt
@@ -86,6 +88,7 @@ URL hoặc bước: <vd. /components/file-system/file-system → Source Code>
 - [ ] Có **tiêu chí kiểm tra** (URL, test, hành vi UI)
 - [ ] Có **đường dẫn file** Executor cần đọc/sửa
 - [ ] Nhắc **quality-gate** và **không commit**
+- [ ] Nhắc founder chạy **Codex review** sau khi Executor xong (`codex-review-gate/SKILL.md`)
 - [ ] Bug có `/systematic-debugging` ở dòng đầu
 - [ ] Ảnh ref: path trong `assets/` hoặc mô tả rõ collapsed vs expanded
 

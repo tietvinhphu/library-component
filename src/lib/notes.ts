@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
-import matter from "gray-matter";
+import yaml from "js-yaml";
 
 const NOTES_DIR = path.join(process.cwd(), "content/notes");
+const FRONTMATTER_PATTERN = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
 
 /**
  * Required frontmatter fields.
@@ -51,9 +52,27 @@ function readAllNoteFiles(): Array<{ slug: string; raw: string }> {
     }));
 }
 
+function parseFrontmatter(raw: string): {
+  data: Record<string, unknown>;
+  content: string;
+} {
+  const match = FRONTMATTER_PATTERN.exec(raw);
+  if (!match) {
+    return { data: {}, content: raw };
+  }
+
+  const parsed = yaml.load(match[1], { schema: yaml.JSON_SCHEMA });
+  const data =
+    parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : {};
+
+  return { data, content: match[2] };
+}
+
 function parseNote(raw: { slug: string; raw: string }): Note | null {
   const { slug, raw: content } = raw;
-  const { data, content: body } = matter(content);
+  const { data, content: body } = parseFrontmatter(content);
 
   const missing = validateFrontmatter(data);
   if (missing.length > 0) {
