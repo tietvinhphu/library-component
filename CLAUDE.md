@@ -82,3 +82,7 @@ Việc gì đã bắt tay làm phải xong hẳn rồi mới chuyển sang việ
 ## Khi cần thêm component mới
 
 Không tự viết ngay ở đây — đọc `.claude/skills/component-distillation/SKILL.md` để theo đúng quy trình (kiểm tra license nguồn trước khi bắt tay build).
+
+## Khi cần thêm ghi chú kiến thức (Notes)
+
+Đọc `.claude/skills/notes-distillation/SKILL.md` để theo đúng quy trình chưng cất note từ nguồn.

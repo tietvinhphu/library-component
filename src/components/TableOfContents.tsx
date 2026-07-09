@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface TocItem {
   id: string;
@@ -19,17 +19,40 @@ function slugify(text: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
+function parseHeadingLine(line: string): { level: number; text: string } | null {
+  if (!line.startsWith("#")) {
+    return null;
+  }
+
+  let level = 0;
+  while (level < line.length && line[level] === "#") {
+    level += 1;
+  }
+
+  if (level === 0 || level > 3 || line[level] !== " ") {
+    return null;
+  }
+
+  const text = line.slice(level + 1).trim();
+  if (!text) {
+    return null;
+  }
+
+  return { level, text };
+}
+
 function parseHeadings(markdown: string): TocItem[] {
   const lines = markdown.split("\n");
   const headings: TocItem[] = [];
 
   for (const line of lines) {
-    const match = line.match(/^(#{1,3})\s+(.+)$/);
-    if (match) {
-      const level = match[1].length;
-      const text = match[2].trim();
-      const id = slugify(text);
-      headings.push({ id, text, level });
+    const heading = parseHeadingLine(line);
+    if (heading) {
+      headings.push({
+        id: slugify(heading.text),
+        text: heading.text,
+        level: heading.level,
+      });
     }
   }
 
@@ -39,14 +62,14 @@ function parseHeadings(markdown: string): TocItem[] {
 export default function TableOfContents({
   content,
 }: Readonly<TableOfContentsProps>) {
-  const [headings, setHeadings] = useState<TocItem[]>([]);
+  const headings = useMemo(() => parseHeadings(content), [content]);
   const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
-    const items = parseHeadings(content);
-    setHeadings(items);
+    if (headings.length === 0) {
+      return;
+    }
 
-    // Set up intersection observer for active heading
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -61,7 +84,6 @@ export default function TableOfContents({
       }
     );
 
-    // Add IDs to actual headings in the DOM
     const headingElements = document.querySelectorAll(
       ".prose-catalog h1, .prose-catalog h2, .prose-catalog h3"
     );
@@ -73,7 +95,7 @@ export default function TableOfContents({
     });
 
     return () => observer.disconnect();
-  }, [content]);
+  }, [headings]);
 
   if (headings.length === 0) {
     return null;

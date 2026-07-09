@@ -16,12 +16,10 @@ const THEME = "github-dark" as const;
 let highlighterPromise: Promise<Highlighter> | null = null;
 
 export async function getSharedHighlighter(): Promise<Highlighter> {
-  if (!highlighterPromise) {
-    highlighterPromise = createHighlighter({
-      themes: [THEME],
-      langs: [...SUPPORTED_LANGS],
-    });
-  }
+  highlighterPromise ??= createHighlighter({
+    themes: [THEME],
+    langs: [...SUPPORTED_LANGS],
+  });
   return highlighterPromise;
 }
 

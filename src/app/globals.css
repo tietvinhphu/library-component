@@ -152,6 +152,38 @@
 }
 
 @layer components {
+  /* Site navigation */
+  .site-nav {
+    height: 64px;
+    border-bottom: 1px solid var(--hairline);
+    background-color: var(--canvas);
+  }
+
+  .site-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+  }
+
+  .site-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .nav-link-active {
+    color: var(--ink);
+    border-left: 2px solid var(--primary);
+    background-color: var(--canvas-soft);
+  }
+
+  .text-muted {
+    color: var(--muted-text);
+  }
+
   .nav-link {
     font-size: 14px;
     font-weight: 500;
