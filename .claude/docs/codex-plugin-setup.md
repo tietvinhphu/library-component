@@ -2,7 +2,7 @@
 
 Plugin chính thức: [openai/codex-plugin-cc](https://github.com/openai/codex-plugin-cc)
 
-Dùng **sau khi Executor (Claude Code) báo xong task** — bước review độc lập trước khi founder commit/push.
+Dùng **trong cùng phiên Claude Code (Executor)** — sau quality-gate local, trước báo founder xong.
 
 ## Yêu cầu
 
@@ -34,22 +34,23 @@ Chạy lại `/codex:setup` cho đến khi báo sẵn sàng.
 
 | Thời điểm | Lệnh | Ghi chú |
 |-----------|------|---------|
-| Sau mọi task Executor (mặc định) | `/codex:review` | Read-only; review diff hiện tại |
+| Sau quality-gate local (Executor tự gọi) | `/codex:review` | Read-only; review diff hiện tại |
 | Task lớn / nhiều file / trước merge | `/codex:review --background` rồi `/codex:status` → `/codex:result` | Review chạy nền |
 | So với `main` trước PR | `/codex:review --base main` | Branch review |
 | Feature kiến trúc / auth / data | `/codex:adversarial-review` + focus text | Challenge design, không chỉ syntax |
 | Executor kẹt, cần tay khác | `/codex:rescue --background <mô tả>` | Delegate fix; dùng `/codex:status` |
 
-## Luồng 4 tầng (cập nhật)
+## Luồng (cập nhật)
 
 ```
 Founder → Cursor (Supervisor)     → prompt paste-ready
-Founder → Claude Code (Executor)  → implement + quality-gate local
-Founder → Claude Code (Codex)     → /codex:review (bắt buộc)
+Founder → Claude Code (Executor)  → implement + quality-gate + /codex:review (bắt buộc)
 Founder → review → commit/push
 ```
 
-Executor **không** thay thế bước Codex review. Codex **không** tự commit/push.
+Executor **tự gọi** `/codex:review` trong cùng session — founder không cần gõ lại. Codex **không** tự commit/push.
+
+> Plugin không có `/codex:preview` — dùng `/codex:review`.
 
 ## Cấu hình tuỳ chọn
 

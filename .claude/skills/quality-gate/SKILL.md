@@ -103,20 +103,9 @@ npm run build
 - Dùng SonarQube MCP (`search_sonar_issues_in_projects`) nếu có — **sau push** gate
   mới phản ánh coverage mới; local chỉ là phòng thủ.
 
-### 6. Chỉ khi checklist pass → báo hoàn thành (chưa commit)
+### 6. Codex review (Executor — cùng phiên, trước báo xong)
 
-Template báo cáo cho user:
-
-```
-✓ Test: X/X pass
-✓ Coverage: Y% (file đã sửa: ...)
-✓ Build: pass
-→ Chờ founder chạy Codex review (.claude/skills/codex-review-gate/SKILL.md)
-```
-
-### 7. Codex review (founder — sau Executor báo xong)
-
-Founder chạy trong **Claude Code** (không phải Cursor):
+Executor **tự gọi** trong Claude Code (không đẩy founder):
 
 ```text
 /codex:review
@@ -124,9 +113,21 @@ Founder chạy trong **Claude Code** (không phải Cursor):
 
 Task lớn: `/codex:review --background` → `/codex:status` → `/codex:result`
 
-Chi tiết: `.claude/skills/codex-review-gate/SKILL.md` và `.claude/docs/codex-plugin-setup.md`
+Chi tiết: `.claude/skills/codex-review-gate/SKILL.md`
 
-**Chỉ sau Codex review pass** → founder commit/push (CI SonarQube scan tự động).
+Issue blocking → sửa → lặp lại checklist từ bước 1.
+
+### 7. Chỉ khi checklist + Codex pass → báo hoàn thành (chưa commit)
+
+Template báo cáo cho user:
+
+```
+✓ Test: X/X pass
+✓ Coverage: Y% (file đã sửa: ...)
+✓ Build: pass
+✓ Codex: /codex:review — pass (hoặc issue đã xử lý)
+→ Sẵn sàng commit/push (founder quyết định)
+```
 
 ## Quy tắc code hay bị SonarCloud flag (sửa ngay khi viết)
 

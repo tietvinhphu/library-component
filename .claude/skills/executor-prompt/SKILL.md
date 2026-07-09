@@ -18,7 +18,7 @@ Supervisor **không** gọi `claude -p` và **không** tự sửa file implement
 | Nguồn | Dùng cho |
 |-------|----------|
 | `.claude/skills/quality-gate/SKILL.md` | Luôn nhắc Executor chạy test/coverage/build trước khi báo xong |
-| `.claude/skills/codex-review-gate/SKILL.md` | Nhắc founder chạy `/codex:review` sau Executor — trước commit |
+| `.claude/skills/codex-review-gate/SKILL.md` | Bắt **Executor** tự gọi `/codex:review` sau quality-gate — trước báo xong |
 | `.claude/skills/component-distillation/SKILL.md` | Thêm/chưng cất component registry |
 | Plugin `/systematic-debugging` | **Bug** — dòng đầu prompt, root cause trước khi sửa |
 | Plugin `/test-driven-development` | Feature phức tạp, cần test trước |
@@ -74,11 +74,24 @@ URL hoặc bước: <vd. /components/file-system/file-system → Source Code>
 - npm test, tsc, lint, build — pass
 - **KHÔNG commit, KHÔNG push**
 
+## Quy trình Executor (bắt buộc — theo thứ tự)
+1. Implement + `.claude/skills/quality-gate/SKILL.md` (test → coverage → build)
+2. **Codex review** — Executor **tự gọi** trong session Claude Code:
+   ```text
+   /codex:review
+   ```
+   (Task lớn: `--background` → `/codex:status` → `/codex:result`; trước PR: `--base main`)
+3. Issue blocking từ Codex → sửa → lặp lại bước 1–2
+4. Chỉ khi quality-gate + Codex pass → báo founder
+
+Đọc `.claude/skills/codex-review-gate/SKILL.md`. Plugin không có `/codex:preview` — dùng `/codex:review`.
+
 ## Báo cáo khi xong
 - Root cause đã fix (1–2 câu) — nếu là bug
 - File đổi
-- Kết quả test/build
-- **Dừng ở đây** — founder chạy `/codex:review` theo `.claude/skills/codex-review-gate/SKILL.md` trước commit
+- Kết quả test/build/coverage
+- Kết quả `/codex:review` (pass hoặc issue đã xử lý)
+- **KHÔNG commit** — founder quyết định commit/push
 ```
 
 ## Checklist chất lượng trước khi giao prompt
@@ -88,7 +101,7 @@ URL hoặc bước: <vd. /components/file-system/file-system → Source Code>
 - [ ] Có **tiêu chí kiểm tra** (URL, test, hành vi UI)
 - [ ] Có **đường dẫn file** Executor cần đọc/sửa
 - [ ] Nhắc **quality-gate** và **không commit**
-- [ ] Nhắc founder chạy **Codex review** sau khi Executor xong (`codex-review-gate/SKILL.md`)
+- [ ] Bắt **Executor tự gọi `/codex:review`** sau quality-gate (`codex-review-gate/SKILL.md`)
 - [ ] Bug có `/systematic-debugging` ở dòng đầu
 - [ ] Ảnh ref: path trong `assets/` hoặc mô tả rõ collapsed vs expanded
 

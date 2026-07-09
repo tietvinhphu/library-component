@@ -1,24 +1,34 @@
 ---
 name: codex-review-gate
 description: >-
-  Bước bắt buộc sau khi Claude Code (Executor) báo xong task: founder chạy Codex
-  plugin trong Claude Code để review độc lập. Trigger khi: Executor hoàn thành,
-  chuẩn bị commit/PR, hoặc founder hỏi "review codex".
+  Bước bắt buộc trong cùng phiên Claude Code (Executor): sau quality-gate local,
+  Executor tự gọi /codex:review. Trigger khi: Executor hoàn thành implement,
+  chuẩn bị báo founder, hoặc founder hỏi "review codex".
 ---
 
 # Codex Review Gate
 
-Mục tiêu: **không commit/push** khi chưa có pass review từ Codex plugin (read-only).
+Mục tiêu: **không báo xong / không commit/push** khi chưa có pass review từ Codex plugin (read-only).
 
 Cài đặt plugin: `.claude/docs/codex-plugin-setup.md`
 
+> **Tên lệnh:** plugin chỉ có `/codex:review` (không có `/codex:preview`). Khi founder nói "codex preview" trong repo này = `/codex:review`.
+
 ## Khi nào chạy
 
-- **Sau mọi task** Executor báo xong (quality-gate local đã pass)
-- **Trước** founder (hoặc Coordinator) commit/push
-- **Trước PR** — dùng `--base main`
+- **Sau quality-gate local** (test → coverage → build) trong **cùng phiên Executor**
+- **Trước** Executor báo founder "xong"
+- **Trước** founder commit/push
+- Trước PR — dùng `--base main`
 
-## Checklist (founder chạy trong Claude Code)
+## Ai chạy
+
+| Tầng | Việc |
+|------|------|
+| **Executor (Claude Code)** | Tự gọi `/codex:review` — **bắt buộc** |
+| **Founder** | Chỉ commit/push sau khi Executor báo Codex pass |
+
+## Checklist (Executor chạy trong Claude Code)
 
 ### 1. Chọn lệnh review
 
@@ -31,24 +41,24 @@ Cài đặt plugin: `.claude/docs/codex-plugin-setup.md`
 
 ### 2. Đọc kết quả
 
-- Issue **phải sửa** → quay lại Executor (prompt mới) hoặc Cursor Supervisor soạn fix
-- Issue **chấp nhận được** → ghi rõ lý do trong PR/commit message (nếu có)
-- Review sạch → sang bước commit
+- Issue **blocking** → Executor sửa trong cùng phiên
+- Issue **chấp nhận được** → ghi lý do trong báo cáo cho founder
+- Review sạch → báo founder sẵn sàng commit
 
 ### 3. Nếu Codex yêu cầu sửa code
 
-1. Sửa (Executor hoặc Cursor nếu founder chỉ định)
+1. Sửa (Executor)
 2. Chạy lại `.claude/skills/quality-gate/SKILL.md`
 3. Chạy lại `/codex:review` trên diff mới
 
-### 4. Chỉ khi Codex review pass → commit/push
+### 4. Chỉ khi Codex review pass → báo founder / commit
 
-Template báo cáo:
+Template báo cáo Executor gửi founder:
 
 ```
-✓ Executor: quality-gate pass
-✓ Codex: /codex:review — không issue blocking (hoặc đã xử lý)
-→ Sẵn sàng commit/push
+✓ Quality-gate: test / coverage / build pass
+✓ Codex: /codex:review — không issue blocking (hoặc đã xử lý: ...)
+→ Sẵn sàng commit/push (founder quyết định)
 ```
 
 ## Lệnh khác (không thay review)
@@ -59,9 +69,10 @@ Template báo cáo:
 
 ## Việc KHÔNG làm
 
-- Không commit ngay sau Executor mà bỏ qua Codex review
+- Không báo "xong" sau quality-gate mà bỏ qua `/codex:review`
+- Không đẩy founder phải tự gõ `/codex:review` — Executor làm trong cùng session
 - Không bật `--enable-review-gate` tự động trừ khi founder monitor chủ động
-- Không nhầm Codex review với SonarQube CI — cả hai đều cần; Codex review logic/design, Sonar gate coverage/violations
+- Không nhầm Codex review với SonarQube CI — cả hai đều cần
 
 ## Liên kết
 
